@@ -2,10 +2,7 @@
 
 //require_once dirname(__FILE__) . '/markdown/MarkdownExtra.inc.php';
 
-$url = 'https://api.github.com/repos/e-maxx-eng/e-maxx-eng/contents/src';
-
-$isLocal = (strpos(getenv('SERVER_SOFTWARE'), 'Development') !== false);
-$storage = $isLocal ? './.data' : 'gs:.../';
+require_once 'common.php';
 
 $path = $_GET['path'];
 $doUpdate = $_GET['update'];
@@ -15,23 +12,21 @@ if (empty($path)) {
     return;
 }
 
-$file = getRequest("$url/$path");
-if ($file !== false) {
-    $file = json_decode($file);
-    echo "{$file->size} {$file->sha}\n";
+$json = getRequest("$url/$path");
+if ($json !== false) {
+    $data = json_decode($json);
+    if (!is_object($data) || !isset($data->name)) {
+        echo "but could not be decoded :(\n$json";
+        return;
+    }
+    echo "{$data->size} {$data->sha}\n";
     if (!empty($doUpdate)) {
-        $data = getRequest($file->download_url);
-        file_put_contents($path, $data);
+        $binary = getRequest($data->download_url);
+        storeFile("$storage/$path", $binary);
         echo "Updated!\n";
     }
 } else {
-    echo "File not found!";
+    echo "File not found: $url/$path\n";
 }
 
-function getRequest($url) {
-    $opts = ['http' => ['method' => 'GET', 'header' => ['User-Agent: PHP']],
-        "ssl" => ["verify_peer" => false, "verify_peer_name" => false]];
-    $context = stream_context_create($opts);
-    return @file_get_contents($url, false, $context);
-}
 
