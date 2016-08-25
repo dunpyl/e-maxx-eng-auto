@@ -22,11 +22,5 @@ handlers:
 - url: /(.+\.html)$
   script: serve.php
 
-- url: /(.+\.txt)$
-  script: serve.php
-
-- url: /(.+\.md)$
-  script: serve.php
-
 - url: /
-  script: hello.php
+  script: serve.php

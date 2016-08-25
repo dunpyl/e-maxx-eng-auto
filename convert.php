@@ -11,8 +11,8 @@ function convertText($text) {
 }
 
 function extractParams(&$text) {
-    $vars = array('template' => 'default',
-            'base' => $isLocal ? 'http://localhost:8080' : 'e-maxx-eng.appspot.com');
+    global $serverUrl;
+    $vars = array('template' => 'default', 'baseurl' => $serverUrl);
     $lines = explode("\n", $text);
     $res = array();
     foreach ($lines as $line) {
