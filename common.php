@@ -9,7 +9,7 @@ $storage = $isLocal ? './.data' : "$gsprefix/data";
 $ghclient = @file_get_contents("$gsprefix/gh-client.txt");
 
 if ($ghclient === false) {
-    echo 'cant read ghclient\n';
+    echo "<!-- cant read ghclient -->\n";
 }
 
 function getRequest($url) {
