@@ -4,7 +4,6 @@ require_once 'common.php';
 require_once 'convert.php';
 
 $path = $_SERVER['REQUEST_URI'];
-$update = $_GET['update'];
 
 if ($path == '/index.html') {
     header("HTTP/1.1 301 Moved Permanently"); 
@@ -17,7 +16,11 @@ if ($path == '/index.html') {
 $path = preg_replace('/\?.*/', '', $path);
 
 $file = "$storage$path";
-if (!file_exists($file) || !empty($update)) {
+
+$filetime = file_exists($file) ? filemtime($file) : 0;
+$timeleft = time() - $filetime;
+
+if ($timeleft > 300) {
     $md = preg_replace('/\.html$/', '.md', $path);
     $json = getRequest("$ghurl$md");
     if ($json !== false) {
@@ -38,6 +41,9 @@ if (!file_exists($file) || !empty($update)) {
 } else {
     $html = file_get_contents($file);
 }
+
+header("Cache-Control: max-age=3600");
+header("X-File-Time: $filetime $timeleft");
 
 echo $html;
 

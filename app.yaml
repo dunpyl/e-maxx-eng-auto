@@ -16,8 +16,8 @@ handlers:
   static_files: favicon.ico
   upload: favicon\.ico
 
-- url: /(.+\.php)$
-  script: \1
+- url: /test.php
+  script: test.php
 
 - url: /(.+\.html)$
   script: serve.php
