@@ -5,7 +5,8 @@ $ghurl = 'https://api.github.com/repos/e-maxx-eng/e-maxx-eng/contents/src';
 $isLocal = (strpos(getenv('SERVER_SOFTWARE'), 'Development') !== false);
 $gsprefix = 'gs://e-maxx-eng.appspot.com';
 $storage = $isLocal ? './.data' : "$gsprefix/data";
-$serverUrl = $isLocal ? 'http://' . $_SERVER['HTTP_HOST'] : 'http://e-maxx-eng.appspot.com';
+$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443) ? 'https' : 'http';
+$serverUrl = $isLocal ? 'http://' . $_SERVER['HTTP_HOST'] : "$protocol://e-maxx-eng.appspot.com";
 
 function ghclient() {
     global $gsprefix;

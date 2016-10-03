@@ -11,8 +11,8 @@ function convertText($text) {
 }
 
 function extractParams(&$text) {
-    global $serverUrl;
-    $vars = array('template' => 'default', 'baseurl' => $serverUrl);
+    global $serverUrl, $protocol;
+    $vars = array('template' => 'default', 'baseurl' => $serverUrl, 'protocol' => $protocol);
     $lines = explode("\n", $text);
     $res = array();
     foreach ($lines as $line) {
