@@ -27,9 +27,7 @@ body {
     margin-top: 9px;
     margin-right: 10px
 }
-#navbar #menu a {
-    font-size: 120%;
-    font-weight: bold;
+#navbar a {
     color: white;
 }
 #footer a {

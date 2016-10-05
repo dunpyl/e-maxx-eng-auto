@@ -5,14 +5,18 @@ require_once 'markdown/MarkdownExtra.inc.php';
 
 function convertText($text) {
     $params = extractParams($text);
+    $text = substituteParams($text, $params);
+    $template = file_get_contents('templates/' . $params['template'] . '.html');
     $params['text'] = \Michelf\MarkdownExtra::defaultTransform($text);
-    $html = loadTemplate($params['template'], $params);
+    $html = substituteParams($template, $params);
     return $html;
 }
 
 function extractParams(&$text) {
     global $serverUrl, $protocol;
-    $vars = array('template' => 'default', 'baseurl' => $serverUrl, 'protocol' => $protocol);
+    $vars = array(
+            'template' => 'default', 'baseurl' => $serverUrl,
+            'protocol' => $protocol, 'imgroot' => 'https://raw.githubusercontent.com/e-maxx-eng/e-maxx-eng/master/img');
     $lines = explode("\n", $text);
     $res = array();
     foreach ($lines as $line) {
@@ -27,12 +31,11 @@ function extractParams(&$text) {
     return $vars;
 }
 
-function loadTemplate($name, $params) {
-    $template = file_get_contents("templates/$name.html");
+function substituteParams($text, $params) {
     foreach ($params as $name => $value) {
-        $template = str_replace("&$name&", $value, $template);
+        $text = str_replace("&$name&", $value, $text);
     }
-    return $template;
+    return $text;
 }
 
 function rootPath() {
