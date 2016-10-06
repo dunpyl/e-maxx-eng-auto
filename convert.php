@@ -3,8 +3,9 @@
 require_once 'common.php';
 require_once 'markdown/MarkdownExtra.inc.php';
 
-function convertText($text) {
+function convertText($text, $history) {
     $params = extractParams($text);
+    $params['history'] = $history;
     $text = substituteParams($text, $params);
     $template = file_get_contents('templates/' . $params['template'] . '.html');
     $params['text'] = \Michelf\MarkdownExtra::defaultTransform($text);

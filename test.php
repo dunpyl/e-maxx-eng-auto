@@ -18,7 +18,7 @@ if (empty($text)) :
 <?php
 else:
 
-echo convertText($text);
+echo convertText($text, '#');
 
 endif;
 

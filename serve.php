@@ -22,7 +22,8 @@ $timeleft = time() - $filetime;
 
 if ($timeleft > 300) {
     $md = preg_replace('/\.html$/', '.md', $path);
-    $json = getRequest("$ghurl$md");
+    $history = $histPrefix . $md;
+    $json = getRequest($ghurl . $md);
     if ($json !== false) {
         $data = json_decode($json);
         if (!is_object($data) || !isset($data->name)) {
@@ -36,7 +37,7 @@ if ($timeleft > 300) {
             return;
     }
     $binary = getRequest($data->download_url);
-    $html = convertText($binary);
+    $html = convertText($binary, $history);
     storeFile($file, $html);
 } else {
     $html = file_get_contents($file);
