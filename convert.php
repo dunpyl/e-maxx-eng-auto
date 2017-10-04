@@ -17,6 +17,7 @@ function extractParams(&$text) {
     global $serverUrl, $protocol;
     $vars = array(
             'template' => 'default', 'baseurl' => $serverUrl,
+            'year' => date('Y'),
             'protocol' => $protocol, 'imgroot' => 'https://raw.githubusercontent.com/e-maxx-eng/e-maxx-eng/master/img');
     $lines = explode("\n", $text);
     $res = array();
