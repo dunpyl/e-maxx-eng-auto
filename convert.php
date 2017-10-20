@@ -3,11 +3,46 @@
 require_once 'common.php';
 require_once 'markdown/MarkdownExtra.inc.php';
 
+function retrieveFile($path, $conv = true, $reloadDelay = 300) {
+    global $ghurl, $histPrefix, $storage;
+    $file = "$storage$path";
+    $filetime = file_exists($file) ? filemtime($file) : 0;
+    $timeleft = time() - $filetime;
+
+    if ($timeleft > $reloadDelay) {
+        $md = $conv ? preg_replace('/\.html$/', '.md', $path) : $path;
+        $json = getRequest($ghurl . $md);
+        if ($json !== false) {
+            $data = json_decode($json);
+            if (!is_object($data) || !isset($data->name)) {
+                header("HTTP/1.1 404 Not Found"); 
+                echo "Object is retrieved from GitHub but could not be decoded :(\n";
+                return null;
+            }
+        } else {
+                header("HTTP/1.1 404 Not Found"); 
+                echo "Source ${ghurl}${md} is not found at GitHub :(";
+                return null;
+        }
+        $html = getRequest($data->download_url);
+        if ($conv) {
+            $html = convertText($html, $histPrefix . $md);
+        }
+        storeFile($file, $html);
+        $from = 'github';
+    } else {
+        $html = file_get_contents($file);
+        $from = 'cache';
+    }
+    header("X-file-" . rand() . ": $path retrieved from $from, filetime=$filetime, timeleft=$timeleft");
+    return $html;
+}
+
 function convertText($text, $history) {
     $params = extractParams($text);
     $params['history'] = $history;
     $text = substituteParams($text, $params);
-    $template = file_get_contents('templates/' . $params['template'] . '.html');
+    $template = retrieveFile('/_templates/' . $params['template'] . '.html', false, 3600);
     $params['text'] = \Michelf\MarkdownExtra::defaultTransform($text);
     $html = substituteParams($template, $params);
     return $html;
