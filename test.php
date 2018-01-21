@@ -4,6 +4,8 @@ require_once 'convert.php';
 
 $text = $_POST['source'];
 
+header("Content-Type: text/html; charset=UTF-8");
+
 if (empty($text)) :
 ?>
 <center>
