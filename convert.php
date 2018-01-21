@@ -26,7 +26,7 @@ function retrieveFile($path, $conv = true, $reloadDelay = 300) {
         }
         $html = getRequest($data->download_url);
         if ($conv) {
-            $html = convertText($html, $histPrefix . $md);
+            $html = convertText($html, $histPrefix . $md, $path);
         }
         storeFile($file, $html);
         $from = 'github';
@@ -38,13 +38,14 @@ function retrieveFile($path, $conv = true, $reloadDelay = 300) {
     return $html;
 }
 
-function convertText($text, $history) {
+function convertText($text, $history, $path) {
     $params = extractParams($text);
     $params['history'] = $history;
     $text = substituteParams($text, $params);
     $template = retrieveFile('/_templates/' . $params['template'] . '.html', false, 3600);
     $params['text'] = \Michelf\MarkdownExtra::defaultTransform($text);
     $html = substituteParams($template, $params);
+    $html = improveAnchors($html, $path);
     return $html;
 }
 
@@ -89,5 +90,9 @@ function rootPath() {
         $path = 'file://' . $path;
     }
     return "$path";
+}
+
+function improveAnchors($html, $path) {
+    return str_replace('<a href="#', '<a href="' . $path . '#', $html);
 }
 
