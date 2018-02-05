@@ -36,6 +36,9 @@ body {
 h1,h2,h3 {
     color: #660000;
 }
+#toc {
+    padding-left: 30px;
+}
 code {
     font-weight: bold;
     padding: 2px;
