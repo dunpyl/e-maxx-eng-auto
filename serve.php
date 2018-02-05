@@ -21,6 +21,8 @@ if ($html === null) {
 }
 
 header("Cache-Control: max-age=3600");
+if (preg_match('/.*\.html/', $path)) {
+    header("Content-Type: text/html; charset=UTF-8");
+}
 
 echo $html;
-

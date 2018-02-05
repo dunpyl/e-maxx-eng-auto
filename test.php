@@ -4,6 +4,8 @@ require_once 'convert.php';
 
 $text = $_POST['source'];
 
+header("Content-Type: text/html; charset=UTF-8");
+
 if (empty($text)) :
 ?>
 <center>
@@ -18,7 +20,7 @@ if (empty($text)) :
 <?php
 else:
 
-echo convertText($text, '#');
+echo convertText($text, '#', '/test.php');
 
 endif;
 
