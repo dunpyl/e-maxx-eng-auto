@@ -15,7 +15,7 @@ $(function() {
             prefix += '&nbsp;&nbsp;&nbsp;';
         }
         var ee = $(e);
-        var name = 'toc-tgt-' + idx;
+        var name = ee.attr('id') ? ee.attr('id') : 'toc-tgt-' + idx;
         ee.attr('id', name);
         prefix += '- <a href="' + location.href.replace(/\#.*/, '') + '#';
         toc.append(prefix + name + '">'+ ee.text() + '<a/><br/>');
