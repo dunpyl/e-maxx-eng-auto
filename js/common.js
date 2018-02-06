@@ -10,15 +10,14 @@ $(function() {
     });
     
     function tocElement(toc, idx, e) {
-        var prefix = '';
-        for (var i = e.tagName.substr(1) - 1; i > 0; i--) {
-            prefix += '&nbsp;&nbsp;&nbsp;';
-        }
+        var style = e.tagName;
         var ee = $(e);
         var name = ee.attr('id') ? ee.attr('id') : 'toc-tgt-' + idx;
         ee.attr('id', name);
-        prefix += '- <a href="' + location.href.replace(/\#.*/, '') + '#';
-        toc.append(prefix + name + '">'+ ee.text() + '<a/><br/>');
+        var span = '<div class="toc-' + style + '"><a href="'
+                + location.href.replace(/\#.*/, '') + '#'
+                + name + '">'+ ee.text() + '<a/></div>';
+        toc.append(span);
     }
     
     function tableOfContent() {
