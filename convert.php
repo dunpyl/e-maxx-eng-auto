@@ -6,7 +6,8 @@ require_once 'markdown/MarkdownExtra.inc.php';
 function retrieveFile($path, $conv = true, $reloadDelay = 300) {
     global $ghurl, $histPrefix, $storage;
     $file = "$storage$path";
-    $filetime = file_exists($file) ? filemtime($file) : 0;
+    $fileexists = file_exists($file);
+    $filetime = $fileexists ? filemtime($file) : 0;
     $timeleft = time() - $filetime;
 
     if ($timeleft > $reloadDelay) {
@@ -28,8 +29,18 @@ function retrieveFile($path, $conv = true, $reloadDelay = 300) {
         if ($conv) {
             $html = convertText($html, $histPrefix . $md, $path);
         }
-        storeFile($file, $html);
-        $from = 'github';
+        if (!is_string($html) || strlen($html) < 16) {
+            if ($fileexists) {
+                $html = file_get_contents($file);
+                $from = 'cache-outdated';
+            } else {
+                $html = 'Please, retry...';
+                $from = 'lost';
+            }
+        } else {
+            storeFile($file, $html);
+            $from = 'github';
+        }
     } else {
         $html = file_get_contents($file);
         $from = 'cache';
