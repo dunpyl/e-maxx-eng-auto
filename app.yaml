@@ -19,6 +19,9 @@ handlers:
 - url: /test.php
   script: test.php
 
+- url: /cnt.php
+  script: cnt.php
+
 - url: /(.+\.html)$
   script: serve.php
 
