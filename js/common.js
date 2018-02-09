@@ -30,7 +30,33 @@ $(function() {
             .insertAfter('h1:first');
         parts.each(function(i, e) { tocElement(toc, i, e) });
     }
-    
+
+    function hash(s) {
+        var sum = 0;
+        for (var i = 0; i < s.length; i++) {
+            sum += s.charCodeAt(i);
+            sum <<= 1;
+            sum = (sum % 0x10000) ^ (sum >> 16);
+        }
+        return sum;
+    }
+
+    function sendCnt() {
+        var data = {
+            url: location.href,
+            time: new Date().getTime(),
+            type: 1,
+        };
+        data = JSON.stringify(data);
+        data = btoa(data);
+        data = data + '.' + hash(data);
+        var root = location.href.replace(/^([a-z]+\:\/\/[^\/]+).*/, '$1');
+        $.post(root + '/cnt.php?d=' + data, 'r=' + Math.random(), function(d) {
+        });
+    }
+
     tableOfContent();
+    setTimeout(sendCnt, 5000);
 });
+
 

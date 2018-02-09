@@ -2,6 +2,8 @@
 
 require_once 'common.php';
 require_once 'convert.php';
+$injectCount = true;
+require_once 'cnt.php';
 
 $path = $_SERVER['REQUEST_URI'];
 
