@@ -42,10 +42,17 @@ $(function() {
     }
 
     function sendCnt() {
+        var date = new Date();
+        var k = 'e-maxx-eng' + date.getYear() + '.' + date.getMonth() + '.' + date.getDay();
+        var isNew = localStorage.getItem(k) === null;
+        if (isNew) {
+            localStorage.clear();
+            localStorage.setItem(k, 1);
+        }
         var data = {
             url: location.href,
-            time: new Date().getTime(),
-            type: 1,
+            time: date.getTime(),
+            isNew: isNew,
         };
         data = JSON.stringify(data);
         data = btoa(data);
