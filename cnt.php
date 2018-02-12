@@ -44,25 +44,38 @@ function counterCount() {
     }
 }
 
-function counterReportFor($memcache, $day, $sfx) {
+function counterReportFor($memcache, $k, $sfx) {
     $N = 16;
-    $k = date('Ymd', time() - $day * 24*60*60) . '-';
     $s = $memcache->get($k . $sfx);
     if ($s === FALSE) {
         $s = 0;
         for ($i = 0; $i < $N; $i++) {
             $s += $memcache->get($k . $i . $sfx);
         }
-        $memcache->set($k . $sfx, $s, 0, 3*24*60*60);
+        $memcache->set($k . $sfx, $s, 0, 10*24*60*60);
     }
     return $s;
 }
 
 function counterReport() {
+    global $injectCount;
     $memcache = new Memcached;
-    $p = counterReportFor($memcache, 1, '');
-    $u = counterReportFor($memcache, 1, '.u');
-    header("X-count: $p/$u");
+    $time = time();
+    $keyAll = date('Ymd') . '-report';
+    $s = $memcache->get($keyAll);
+    if (!$s) {
+        $s = '';
+        for ($i = 1; $i <= 7; $i++) {
+            $d = $time - $i * 24*60*60;
+            $k = date('Ymd', $d) . '-';
+            $p = counterReportFor($memcache, $k, '');
+            $u = counterReportFor($memcache, $k, '.u');
+            $s = $s . date('Y-m-d', $d) . ":$p/$u ";
+        }
+        $s = trim($s);
+        $memcache->set($keyAll, $s, 0, 3*24*60*60);
+    }
+    $injectCount = $s;
 }
 
 if (!isset($injectCount)) {

@@ -61,8 +61,23 @@ $(function() {
         $.post(root + '/cnt.php?d=' + data, 'r=' + Math.random(), function(d) {
         });
     }
-
+    
+    function visitors() {
+        var data = $('body').attr('data-v');
+        if (!data) {
+            return;
+        }
+        var short = data.replace(/\S+?(\d+\:\S+).*/, '$1');
+        var span = $('<span>' + short + '</span>')
+                .css('float', 'right').css('cursor', 'pointer')
+                .appendTo('#footer');
+        span.click(function() {
+            alert('Last week stats:\n\n' + data.replace(/\s/g, '\r'));
+        });
+    }
+    
     tableOfContent();
+    visitors();
     setTimeout(sendCnt, 5000);
 });
 

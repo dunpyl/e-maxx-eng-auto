@@ -27,4 +27,7 @@ if (preg_match('/.*\.html/', $path)) {
     header("Content-Type: text/html; charset=UTF-8");
 }
 
+if ($injectCount) {
+    $html = preg_replace('/\<body/i', "<body data-v=\"$injectCount\"", $html);
+}
 echo $html;
