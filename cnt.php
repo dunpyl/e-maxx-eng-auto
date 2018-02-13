@@ -31,6 +31,10 @@ function counterCount() {
             return;
         }
         $data = json_decode(base64_decode($data));
+        $dt = abs($data->time / 1000 - time());
+        if ($dt > 4000) {
+            return;
+        }
     } catch (Exception $e) {
         return;
     }
