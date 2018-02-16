@@ -54,6 +54,7 @@ function convertText($text, $history, $path) {
     $params['history'] = $history;
     $text = substituteParams($text, $params);
     $template = retrieveFile('/_templates/' . $params['template'] . '.html', false, 3600);
+    $text = removeSnippetNames($text);
     $params['text'] = \Michelf\MarkdownExtra::defaultTransform($text);
     $html = substituteParams($template, $params);
     $html = improveAnchors($html, $path);
@@ -105,5 +106,9 @@ function rootPath() {
 
 function improveAnchors($html, $path) {
     return str_replace('<a href="#', '<a href="' . $path . '#', $html);
+}
+
+function removeSnippetNames($html) {
+    return preg_replace('/^\`\`\`(\S+)\s.*$/m', '```\1', $html);
 }
 
