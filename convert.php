@@ -109,6 +109,6 @@ function improveAnchors($html, $path) {
 }
 
 function removeSnippetNames($html) {
-    return preg_replace('/^\`\`\`(\S+)\s.*$/m', '```\1', $html);
+    return preg_replace('/^\`\`\`(\S+)\h.*$/m', '```\1', $html);
 }
 
