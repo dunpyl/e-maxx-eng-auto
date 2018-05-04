@@ -1,29 +1,42 @@
 <?php
 
-$ghurl = 'https://api.github.com/repos/e-maxx-eng/e-maxx-eng/contents/src';
+use google\appengine\api\app_identity\AppIdentityService;
+
+$appId = AppIdentityService::getApplicationId();
 
 $isLocal = (strpos(getenv('SERVER_SOFTWARE'), 'Development') !== false);
-$gsprefix = 'gs://e-maxx-eng.appspot.com';
-$histPrefix = 'https://github.com/e-maxx-eng/e-maxx-eng/commits/master/src';
+$gsprefix = "gs://$appId.appspot.com";
+list($ghProject, $ghSecret) = ghclient();
+$ghurl = "https://api.github.com/repos/$ghProject/contents/src";
+$ghRawContentUrl = "https://raw.githubusercontent.com/$ghProject/master/img";
+$histPrefix = "https://github.com/$ghProject/commits/master/src";
 $storage = $isLocal ? './.data' : "$gsprefix/data";
-#$protocol = ((!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || $_SERVER['SERVER_PORT'] == 443) ? 'https' : 'http';
 $protocol = 'https';
-$serverUrl = $isLocal ? 'http://' . $_SERVER['HTTP_HOST'] : "$protocol://e-maxx-eng.appspot.com";
+$serverUrl = $isLocal ? 'http://' . $_SERVER['HTTP_HOST'] : "$protocol://$appId.appspot.com";
 
 function ghclient() {
     global $gsprefix;
-    $ghclient = @file_get_contents("$gsprefix/gh-client.txt");
-    if (empty($ghclient)) {
-        $ghclient = '';
+    $prj = 'e-maxx-eng/e-maxx-eng';
+    $secret = '';
+    $content = @file_get_contents("$gsprefix/gh-client.txt");
+    if (!empty($content)) {
+        $content = preg_split('/\s+/', trim($content));
+        if (count($content) > 0) {
+            $secret = $content[0];
+            if (count($content) > 1) {
+                $prj = $content[1];
+            }
+        }
     }
-    return $ghclient;
+    return array($prj, $secret);
 }
 
 function getRequest($url) {
+    global $ghSecret;
     $opts = ['http' => ['method' => 'GET', 'header' => 'User-Agent: PHP'],
         "ssl" => ["verify_peer" => false, "verify_peer_name" => false]];
     $context = stream_context_create($opts);
-    $url = $url . ghclient();
+    $url = $url . $ghSecret;
     return @file_get_contents($url, false, $context);
 }
 

@@ -1,4 +1,3 @@
-application: e-maxx-eng
 version: 1
 runtime: php55
 api_version: 1

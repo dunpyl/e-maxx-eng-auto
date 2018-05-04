@@ -66,7 +66,7 @@ function extractParams(&$text) {
     $vars = array(
             'template' => 'default', 'baseurl' => $serverUrl,
             'year' => date('Y'),
-            'protocol' => $protocol, 'imgroot' => 'https://raw.githubusercontent.com/e-maxx-eng/e-maxx-eng/master/img');
+            'protocol' => $protocol, 'imgroot' => $ghRawContentUrl);
     $lines = explode("\n", $text);
     $res = array();
     foreach ($lines as $line) {

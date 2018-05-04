@@ -43,7 +43,7 @@ $(function() {
 
     function sendCnt() {
         var date = new Date();
-        var k = 'e-maxx-eng' + date.getYear() + '.' + date.getMonth() + '.' + date.getDay();
+        var k = 'stats.' + date.getYear() + '.' + date.getMonth() + '.' + date.getDay();
         var isNew = localStorage.getItem(k) === null;
         if (isNew) {
             localStorage.clear();

@@ -27,6 +27,8 @@ if (preg_match('/.*\.html/', $path)) {
     header("Content-Type: text/html; charset=UTF-8");
 }
 
+header("X-Config: $ghProject, " . strlen($ghSecret));
+
 if ($injectCount) {
     $html = preg_replace('/\<body/i', "<body data-v=\"$injectCount\"", $html);
 }
