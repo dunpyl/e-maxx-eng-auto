@@ -62,7 +62,7 @@ function convertText($text, $history, $path) {
 }
 
 function extractParams(&$text) {
-    global $serverUrl, $protocol;
+    global $serverUrl, $protocol, $ghRawContentUrl;
     $vars = array(
             'template' => 'default', 'baseurl' => $serverUrl,
             'year' => date('Y'),
