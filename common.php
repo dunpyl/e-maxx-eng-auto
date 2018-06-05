@@ -6,18 +6,19 @@ $appId = AppIdentityService::getApplicationId();
 
 $isLocal = (strpos(getenv('SERVER_SOFTWARE'), 'Development') !== false);
 $gsprefix = "gs://$appId.appspot.com";
-list($ghProject, $ghSecret) = ghclient();
+list($ghProject, $ghSecret, $customHost) = ghclient();
 $ghurl = "https://api.github.com/repos/$ghProject/contents/src";
 $ghRawContentUrl = "https://raw.githubusercontent.com/$ghProject/master/img";
 $histPrefix = "https://github.com/$ghProject/commits/master/src";
 $storage = $isLocal ? './.data' : "$gsprefix/data";
 $protocol = 'https';
-$serverUrl = $isLocal ? 'http://' . $_SERVER['HTTP_HOST'] : "$protocol://$appId.appspot.com";
+$serverUrl = ($isLocal ? 'http' : $protocol) . '://' . $_SERVER['HTTP_HOST'];
 
 function ghclient() {
     global $gsprefix;
     $prj = 'e-maxx-eng/e-maxx-eng';
     $secret = '';
+    $host = '';
     $content = @file_get_contents("$gsprefix/gh-client.txt");
     if (!empty($content)) {
         $content = preg_split('/\s+/', trim($content));
@@ -26,9 +27,12 @@ function ghclient() {
             if (count($content) > 1) {
                 $prj = $content[1];
             }
+            if (count($content) > 2) {
+                $host = $content[2];
+            }
         }
     }
-    return array($prj, $secret);
+    return array($prj, $secret, $host);
 }
 
 function getRequest($url) {

@@ -7,6 +7,13 @@ require_once 'cnt.php';
 
 $path = $_SERVER['REQUEST_URI'];
 
+if ($customHost !== '' && strpos($serverUrl, '.appspot.') !== false) {
+    $serverUrl = preg_replace('/[^\.]+\.appspot\.com/', $customHost, $serverUrl);
+    header("HTTP/1.1 301 Moved Permanently");
+    header("Location: $protocol://$serverUrl$path");
+    return;
+}
+
 if ($path == '/index.html') {
     header("HTTP/1.1 301 Moved Permanently"); 
     header("Location: $serverUrl");
